@@ -1,8 +1,14 @@
 body {
     background-color: #fcd5ce;
     margin: 0; 
-    padding: 0; 
+    padding: 0;
+    font-family: "Inconsolata", monospace;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100; 
 }
+
 
 header {
     background-color: #ffb5a7;
@@ -10,6 +16,95 @@ header {
 }
 
 #logo {
-    height: 70px;
+    height: 50px;
+    padding-top: 10px;
+    padding-left: 20px;
+    font-family: "Inconsolata", monospace;
+    font-optical-sizing: auto;
+    font-weight: 900; 
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    font-size: 2rem;
+    color: #403035;
 }
 
+
+#content{
+    width: 100%;
+    height: 500px;
+    color: #403035;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+#content h1{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+#content p{
+    width: 50%;
+    font-weight: bold;
+    color: #5d474e;
+}
+
+button {
+    background-color: #403035;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: 0.5s;
+    width: 250px;
+    height: 50px;
+}
+
+button:hover {
+    background-color: #ffb5a7;
+}
+
+#chatSection {
+    text-align: center;
+    padding: 20px;
+}
+
+p, button {
+    opacity: 0; 
+    transform: translateY(100px); 
+    animation: slideUp 2s forwards;
+}
+
+
+p {
+    animation-delay: 0s; 
+}
+
+button {
+    animation-delay: 0.5s;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#typingEffect {
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden; /* Hides the text until it is typed */
+    border-right: .15em solid #f4978e; /* Creates a blinking cursor */
+}
