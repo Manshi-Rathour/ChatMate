@@ -1,0 +1,15 @@
+body {
+    background-color: #fcd5ce;
+    margin: 0; 
+    padding: 0; 
+}
+
+header {
+    background-color: #ffb5a7;
+    width: 100%; 
+}
+
+#logo {
+    height: 70px;
+}
+
