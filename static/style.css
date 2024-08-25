@@ -1,40 +1,47 @@
 body {
     background-color: #fcd5ce;
-    margin: 0; 
+    margin: 0;
     padding: 0;
     font-family: "Inconsolata", monospace;
     font-optical-sizing: auto;
     font-weight: 300;
     font-style: normal;
-    font-variation-settings: "wdth" 100; 
+    font-variation-settings: "wdth" 100;
 }
-
 
 header {
     background-color: #ffb5a7;
-    width: 100%; 
+    width: 100%;
 }
 
 #logo {
     height: 50px;
-    padding-top: 10px;
-    padding-left: 20px;
-    font-family: "Inconsolata", monospace;
-    font-optical-sizing: auto;
-    font-weight: 900; 
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    /* border: 2px solid black; */
+}
+
+#logo img {
+    width: 50px; 
+    height: 50px; 
+    margin-right: 10px; 
+}
+
+#logoText {
+    font-family: "Inconsolata", monospace; 
+    font-weight: bold;
     font-size: 2rem;
-    color: #403035;
+    /* color: #403035;  */
+    color: black;
 }
 
 
-#content{
+/* Content Section Styles */
+#content {
     width: 100%;
     height: 500px;
     color: #403035;
-    overflow-x: hidden;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,15 +50,36 @@ header {
     overflow: hidden;
 }
 
-#content h1{
+#content h1 {
     font-size: 2rem;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: .15em solid #f4978e;
 }
 
-#content p{
+#content p, #content button {
+    opacity: 0;
+    transform: translateY(100px);
+    animation: slideUp 2s forwards;
+}
+
+#content p {
+    animation-delay: 0s;
     width: 50%;
     font-weight: bold;
     color: #5d474e;
+}
+
+#content button {
+    animation-delay: 0.5s;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 button {
@@ -60,7 +88,6 @@ button {
     color: white;
     padding: 10px 20px;
     text-align: center;
-    text-decoration: none;
     display: inline-block;
     font-size: 16px;
     margin: 10px;
@@ -72,39 +99,133 @@ button {
 }
 
 button:hover {
-    background-color: #ffb5a7;
+    /* background-color: #ffb5a7; */
+    background-color: #f4978e;
 }
 
+/* Chat Section Styles */
 #chatSection {
-    text-align: center;
+    display: flex;
+    height: calc(100vh - 50px); /* Adjust based on header height */
+}
+
+#leftPane {
+    width: 70%;
     padding: 20px;
+    text-align: center;
+    background-color: #fde2e4;
+    position: relative; /* To position the back button at the bottom right */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: width 0.5s ease;
 }
 
-p, button {
-    opacity: 0; 
-    transform: translateY(100px); 
-    animation: slideUp 2s forwards;
+#rightPane {
+    width: 30%;
+    padding: 20px;
+    background-color: #f4978e;
+    transition: opacity 0.5s ease, width 0.5s ease;
+}
+
+#rightPane.hidden {
+    display: none;
 }
 
 
-p {
-    animation-delay: 0s; 
+
+#voiceWave {
+    width: 100px;
+    height: 100px;
+    background-color: #ffb5a7;
+    margin: 0 auto;
+    border-radius: 50%;
+    position: relative;
+    animation: pulse 2s infinite;
 }
 
-button {
-    animation-delay: 0.5s;
-}
-
-@keyframes slideUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
     }
 }
 
-#typingEffect {
-    font-family: monospace;
-    white-space: nowrap;
-    overflow: hidden; /* Hides the text until it is typed */
-    border-right: .15em solid #f4978e; /* Creates a blinking cursor */
+#controls {
+    margin-top: 20px;
+}
+
+#controls button {
+    width: auto;
+    margin: 0 10px;
+}
+
+#backToMain {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 40px;
+    background-color: #403035;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+#backToMain:hover {
+    background-color: #f4978e;
+}
+
+/* Toggle Icon */
+#togglePaneBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#togglePaneBtn:hover {
+    background-color: #f4978e;
+}
+
+#exitBtn {
+    background-color: #403035;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#exitBtn:hover {
+    background-color: #f4978e;
+}
+
+
+/* Vibration effect for the voice wave */
+@keyframes vibrate {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }

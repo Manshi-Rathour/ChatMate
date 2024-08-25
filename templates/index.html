@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatMate</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ChatMate</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body>
+        <header>
+            <div id="logo">
+                <img src="/static/Chatmate/1.png" alt="ChatMate Logo" id="logoImage">
+                <span id="logoText">ChatMate</span>
+            </div>
+        </header>               
 
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <header>
-        <div id="logo" class="inconsolata-bold">
-            ChatMate
+        <div id="content">
+            <h1 id="typingEffect">Welcome to ChatMate!</h1>
+            <p>Where AI meets real conversation. Dive in now and see how effortless chatting with a virtual assistant can be.</p>
+            <button id="startChat">Start Conversation</button>
         </div>
-    </header>
 
-    <div id="content">
-        <h1 id="typingEffect">Welcome to ChatMate!</h1>
-        <p>Where AI meets real conversation. Dive in now and see how effortless chatting with a virtual assistant can be.</p>
-        <button id="startChat">Start Conversation</button>
-    </div>
+        <div id="chatSection" style="display: none;">
+            <div id="leftPane">
+                <div id="voiceWave"></div>
+                <div id="controls">
+                    <button id="muteBtn"><i class="fas fa-microphone fa-lg"></i></button> 
+                    <button id="exitBtn"><i class="fas fa-play fa-lg"></i></button>
+                    <button id="toggleRightPaneBtn"><i class="fas fa-columns fa-lg"></i></button> 
+                </div>
+                
+                <button id="backToMain">Back to Home</button>
+            </div>
+            <div id="rightPane">
+                <p>This is the right pane content.</p>
+            </div>
+        </div>
 
-    <div id="chatSection" style="display: none;">
-        <button id="backToMain">Back to Main</button>
-    </div>
-    
-
-    <script src="/static/script.js"></script>
-</body>
+        <script src="/static/script.js"></script>
+    </body>
 </html>
