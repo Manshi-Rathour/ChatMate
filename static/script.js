@@ -1,8 +1,14 @@
 console.log("Script loaded");
 
+document.getElementById('logoImage').addEventListener('click', function() {
+    location.reload();
+});
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Typing effect
+    startTypingEffect(); // Start the typing effect on initial load
+});
+
+function startTypingEffect() {
     const textElement = document.getElementById("typingEffect");
     const text = textElement.textContent;
     textElement.textContent = ""; // Clear the text element to start from an empty state
@@ -17,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     type(); // Start the typing effect
-});
+}
 
 document.getElementById('startChat').addEventListener('click', function() {
     console.log('Start Chat button clicked');
@@ -29,6 +35,7 @@ document.getElementById('backToMain').addEventListener('click', function() {
     console.log('Back to Main button clicked');
     document.getElementById('content').style.display = 'flex';
     document.getElementById('chatSection').style.display = 'none';
+    startTypingEffect(); // Restart the typing effect when returning to the main page
 });
 
 document.getElementById('toggleRightPaneBtn').addEventListener('click', function() {
@@ -124,6 +131,7 @@ document.getElementById('exitBtn').addEventListener('click', function() {
         // Go back to the main page
         document.getElementById('chatSection').style.display = 'none';
         document.getElementById('content').style.display = 'flex';
+        startTypingEffect(); // Restart the typing effect when returning to the main page
     } else {
         // Start speech recognition
         if (!recognition) {

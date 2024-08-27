@@ -7,6 +7,7 @@ body {
     font-weight: 300;
     font-style: normal;
     font-variation-settings: "wdth" 100;
+    overflow-y: hidden;
 }
 
 header {
@@ -23,17 +24,9 @@ header {
 }
 
 #logo img {
-    width: 50px; 
-    height: 50px; 
-    margin-right: 10px; 
-}
-
-#logoText {
-    font-family: "Inconsolata", monospace; 
-    font-weight: bold;
-    font-size: 2rem;
-    /* color: #403035;  */
-    color: black;
+    width: 200px; 
+    height: 200px; 
+    /* margin-right: 10px;  */
 }
 
 
@@ -126,10 +119,21 @@ button:hover {
     padding: 20px;
     background-color: #f4978e;
     transition: opacity 0.5s ease, width 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    /* border: 2px solid red; */
 }
 
 #rightPane.hidden {
     display: none;
+}
+
+#rightPane .response{
+    width: auto;
+    height: 100%;
+    border: 2px solid #403035;
+    margin-bottom: 20px;
+    border-radius: 8px;
 }
 
 
