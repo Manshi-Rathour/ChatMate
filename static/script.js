@@ -84,6 +84,18 @@ function initializeRecognition() {
             transcript += event.results[i][0].transcript;
         }
         console.log("Speech recognized: ", transcript);
+        
+        // Append user's query to the response div
+        appendMessage('User', transcript);
+        
+        // Send the recognized text to the backend for processing
+        sendMessageToChatbot(transcript).then(response => {
+            // Append chatbot's response to the response div
+            appendMessage('Chatbot', response.message);
+            
+            // Automatically speak the bot's response
+            speakText(response.message, 'en-US');
+        });
     };
 }
 
@@ -103,10 +115,8 @@ function updateMuteButton() {
 document.getElementById('muteBtn').addEventListener('click', function() {
     console.log('Mute button clicked');
     if (isRecognizing) {
-        // Stop speech recognition
         recognition.stop();
     } else {
-        // Start speech recognition
         if (!recognition) {
             initializeRecognition();
         }
@@ -116,31 +126,27 @@ document.getElementById('muteBtn').addEventListener('click', function() {
 
 document.getElementById('exitBtn').addEventListener('click', function() {
     console.log('Exit button clicked');
-
     const button = document.getElementById('exitBtn');
     const buttonIcon = button.querySelector('i');
 
     if (isRecognizing) {
-        // Stop speech recognition and go back to the main page
         recognition.stop();
         buttonIcon.classList.remove('fa-times');
-        buttonIcon.classList.add('fa-play'); // Switch to a play icon
-        button.title = 'Start Speech Recognition'; // Change tooltip text
+        buttonIcon.classList.add('fa-play');
+        button.title = 'Start Speech Recognition';
         isRecognizing = false;
 
-        // Go back to the main page
         document.getElementById('chatSection').style.display = 'none';
         document.getElementById('content').style.display = 'flex';
-        startTypingEffect(); // Restart the typing effect when returning to the main page
+        startTypingEffect();
     } else {
-        // Start speech recognition
         if (!recognition) {
             initializeRecognition();
         }
         recognition.start();
         buttonIcon.classList.remove('fa-play');
-        buttonIcon.classList.add('fa-times'); // Switch to an exit icon
-        button.title = 'Stop Speech Recognition'; // Change tooltip text
+        buttonIcon.classList.add('fa-times');
+        button.title = 'Stop Speech Recognition';
         isRecognizing = true;
     }
 });
@@ -153,3 +159,39 @@ document.getElementById('voiceWave').addEventListener('click', function() {
         voiceWave.style.animation = '';
     }, 2000);
 });
+
+function appendMessage(role, text) {
+    const messageElement = document.createElement('p');
+    const icon = role === 'User' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+    messageElement.innerHTML = `${icon} : ${text}`;
+    messageElement.style.padding = '5px';
+    if (role === 'Chatbot') {
+        messageElement.classList.add('bg-dark');
+    }
+    document.getElementById('responseDiv').appendChild(messageElement);
+}
+
+async function sendMessageToChatbot(message) {
+    try {
+        const response = await fetch('/chatbot', {
+            method: 'POST',
+            body: JSON.stringify({ message }),
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('Error in sendMessageToChatbot:', error);
+        return { message: `Error: ${error.message}` };
+    }
+}
+
+function speakText(text, language) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language;
+    window.speechSynthesis.speak(utterance);
+}
