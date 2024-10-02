@@ -128,13 +128,36 @@ button:hover {
     display: none;
 }
 
-#rightPane .response{
-    width: auto;
-    height: 100%;
-    border: 2px solid #403035;
-    margin-bottom: 20px;
-    border-radius: 8px;
+#rightPane .response {
+    width: auto; /* Use available width */
+    height: 100%; /* Full height */
+    border: 2px solid #403035; 
+    margin-bottom: 20px; /* Space below the chat area */
+    border-radius: 8px; /* Rounded corners */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding: 10px; /* Add some padding for better readability */
 }
+
+/* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+#rightPane .response::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+#rightPane .response::-webkit-scrollbar-track {
+    background: #ffb5a7; /* Color of the scrollbar track */
+    border-radius: 10px; /* Round the corners of the track */
+}
+
+#rightPane .response::-webkit-scrollbar-thumb {
+    background: #403035; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Round the corners of the thumb */
+}
+
+#rightPane .response::-webkit-scrollbar-thumb:hover {
+    background: #1a1315; /* Darker color when hovered */
+}
+
 
 
 
@@ -202,7 +225,7 @@ button:hover {
     background-color: #f4978e;
 }
 
-#exitBtn {
+#playBtn {
     background-color: #403035;
     color: white;
     border: none;
@@ -214,7 +237,7 @@ button:hover {
     transition: background-color 0.3s;
 }
 
-#exitBtn:hover {
+#playBtn:hover {
     background-color: #f4978e;
 }
 
