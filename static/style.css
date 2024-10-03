@@ -92,7 +92,6 @@ button {
 }
 
 button:hover {
-    /* background-color: #ffb5a7; */
     background-color: #f4978e;
 }
 
@@ -129,14 +128,14 @@ button:hover {
 }
 
 #rightPane .response {
-    width: auto; /* Use available width */
-    height: 100%; /* Full height */
+    width: auto; 
+    height: 100%; 
     border: 2px solid #403035; 
-    margin-bottom: 20px; /* Space below the chat area */
-    border-radius: 8px; /* Rounded corners */
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-    padding: 10px; /* Add some padding for better readability */
+    margin-bottom: 20px; 
+    border-radius: 8px; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    padding: 10px; 
 }
 
 /* Custom scrollbar for WebKit browsers (Chrome, Safari) */
@@ -162,23 +161,16 @@ button:hover {
 
 
 #voiceWave {
-    width: 100px;
-    height: 100px;
-    background-color: #ffb5a7;
+    width: 500px;
+    height: 200px;
+    background-color: #f4978e;
     margin: 0 auto;
-    border-radius: 50%;
     position: relative;
-    animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
+
+
+
 
 #controls {
     margin-top: 20px;
@@ -242,17 +234,3 @@ button:hover {
 }
 
 
-/* Vibration effect for the voice wave */
-@keyframes vibrate {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}

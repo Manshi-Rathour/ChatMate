@@ -56,6 +56,87 @@ document.getElementById('backToMain').addEventListener('click', function() {
 
 
 
+
+
+
+// Voice Wave Drawing Logic (Equalizer Style)
+const voiceWaveDiv = document.getElementById('voiceWave');
+const canvas = document.createElement('canvas');
+voiceWaveDiv.appendChild(canvas);
+
+const ctx = canvas.getContext('2d');
+let isSpeaking = false;
+let bars = []; // Array to hold bar heights
+const numberOfBars = 30; // Number of equalizer bars
+const maxBarHeight = 150; // Maximum height of the bars
+const updateInterval = 200; // Time in milliseconds to update the bar heights
+
+// Adjust canvas size dynamically
+function adjustCanvasSize() {
+    canvas.width = voiceWaveDiv.offsetWidth;
+    canvas.height = voiceWaveDiv.offsetHeight;
+}
+
+// Function to generate random bars
+function generateBars() {
+    bars = Array.from({ length: numberOfBars }, () => Math.random() * maxBarHeight);
+}
+
+// Function to draw the equalizer bars
+function drawEqualizer() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    const barWidth = canvas.width / numberOfBars;
+
+    bars.forEach((height, index) => {
+        const x = index * barWidth;
+        ctx.fillStyle = '#403035'; // Bar color
+        ctx.fillRect(x, canvas.height - height, barWidth - 2, height);
+    });
+
+    if (isSpeaking) {
+        requestAnimationFrame(drawEqualizer);
+    }
+}
+
+// Function to update bar heights
+function updateBars() {
+    if (!isSpeaking) return;
+
+    bars = bars.map(height => Math.max(10, Math.random() * maxBarHeight)); // Randomly update heights
+    setTimeout(updateBars, updateInterval); // Call updateBars again after the specified interval
+}
+
+// Stop the bars when speech recognition ends
+function stopEqualizer() {
+    isSpeaking = false;
+    // Do not clear the canvas, just stop updating heights
+}
+
+// Start the bars animation and drawing
+function startEqualizer() {
+    isSpeaking = true;
+    adjustCanvasSize(); // Adjust canvas size before drawing
+    generateBars(); // Generate initial bars
+    drawEqualizer(); // Start drawing the bars
+    updateBars(); // Start updating the bars
+}
+
+// Function to display random bars on page load
+function showInitialBars() {
+    adjustCanvasSize(); // Ensure canvas is correctly sized
+    generateBars(); // Generate random heights for the bars
+    drawEqualizer(); // Draw the bars on the canvas
+}
+
+
+// Show initial random bars on page load
+window.onload = showInitialBars;
+
+
+
+
+
+
 // Voice Recognition Logic
 let isRecognizing = false;
 let recognition = null;
@@ -75,11 +156,13 @@ function initializeRecognition() {
     recognition.onstart = function() {
         console.log("Speech recognition started");
         isRecognizing = true;
+        startEqualizer(); // Start equalizer on speech recognition start
     };
 
     recognition.onend = function() {
         console.log("Speech recognition ended");
         isRecognizing = false;
+        stopEqualizer();
 
         // Reset the icon to 'fa-play' when recognition ends
         const button = document.getElementById('playBtn');
@@ -153,9 +236,11 @@ function appendMessage(role, text) {
     const icon = role === 'User' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
     messageElement.innerHTML = `${icon} : ${text}`;
     messageElement.style.padding = '5px';
+    messageElement.style.color = "#403035";
     messageElement.classList.add(`${role.toLowerCase()}-message`); // Add class for easy targeting
     if (role === 'Chatbot') {
-        messageElement.classList.add('bg-dark');
+        messageElement.style.backgroundColor = "#ffb5a7";
+        messageElement.style.borderRadius = "3px";
     }
     document.getElementById('responseDiv').appendChild(messageElement);
 
@@ -176,11 +261,13 @@ document.getElementById('playBtn').addEventListener('click', function() {
         buttonIcon.classList.add('fa-play');
         button.title = 'Start Speech Recognition';
         isRecognizing = false; // Set recognizing state to false
+        stopEqualizer(); // Stop the equalizer but keep bars
     } else {
         if (!recognition) {
             initializeRecognition(); // Initialize recognition if not already done
         }
         recognition.start(); // Start recognizing
+        startEqualizer(); // Start the equalizer
         buttonIcon.classList.remove('fa-play');
         buttonIcon.classList.add('fa-times');
         button.title = 'Stop Speech Recognition';
@@ -212,12 +299,3 @@ function speakText(text, language) {
     utterance.lang = language;
     window.speechSynthesis.speak(utterance);
 }
-
-document.getElementById('voiceWave').addEventListener('click', function() {
-    console.log('Voice Wave clicked');
-    const voiceWave = document.getElementById('voiceWave');
-    voiceWave.style.animation = 'vibrate 0.5s linear infinite';
-    setTimeout(() => {
-        voiceWave.style.animation = '';
-    }, 2000);
-});
