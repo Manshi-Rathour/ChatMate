@@ -1,6 +1,7 @@
 console.log("Script loaded");
 
 document.getElementById('logoImage').addEventListener('click', function() {
+    stopSpeaking(); 
     location.reload();
 });
 
@@ -23,6 +24,11 @@ function startTypingEffect() {
     }
 
     type(); // Start the typing effect
+}
+
+// Function to stop any ongoing speech synthesis
+function stopSpeaking() {
+    window.speechSynthesis.cancel(); // Stop any ongoing speech
 }
 
 document.getElementById('toggleRightPaneBtn').addEventListener('click', function() {
@@ -49,6 +55,7 @@ document.getElementById('startChat').addEventListener('click', function() {
 
 document.getElementById('backToMain').addEventListener('click', function() {
     console.log('Back to Main button clicked');
+    stopSpeaking(); 
     document.getElementById('content').style.display = 'flex';
     document.getElementById('chatSection').style.display = 'none';
     startTypingEffect(); // Restart the typing effect when returning to the main page
@@ -137,7 +144,6 @@ window.onload = showInitialBars;
 
 
 
-// Voice Recognition Logic
 let isRecognizing = false;
 let recognition = null;
 let finalTranscript = ''; // Store final transcript after user stops talking
@@ -161,7 +167,6 @@ function initializeRecognition() {
 
     recognition.onend = function() {
         console.log("Speech recognition ended");
-        isRecognizing = false;
         stopEqualizer();
 
         // Reset the icon to 'fa-play' when recognition ends
@@ -181,7 +186,7 @@ function initializeRecognition() {
             if (event.results[i].isFinal) {
                 finalTranscript += event.results[i][0].transcript; // Append to final transcript
                 console.log("Final result received:", finalTranscript); // Debugging statement
-                processFinalTranscript(); // Process the final transcript immediately when it's final
+                processFinalTranscript(); // Send final transcript to backend after processing
             } else {
                 interimTranscript += event.results[i][0].transcript; // Accumulate interim results
             }
@@ -190,10 +195,10 @@ function initializeRecognition() {
         // Update the UI with the interim transcript only
         updateTranscript(interimTranscript);
 
-        // Set timeout to detect 1-second pause in speech
+        // Set timeout to detect 1-second pause in speech, but do NOT stop recognition
         pauseTimeout = setTimeout(() => {
             console.log("Pause detected, processing final transcript");
-            processFinalTranscript(); // Process if user pauses for 1 second
+            processFinalTranscript(); // Process the final transcript but keep the mic active
         }, 1000); // Wait 1 second for pause detection
     };
 }
@@ -208,13 +213,48 @@ function processFinalTranscript() {
             // Append the chatbot's response to the UI
             appendMessage('Chatbot', response.message);
 
-            // Optionally, speak the chatbot's response
-            speakText(response.message, 'en-US');
+            // Stop recognition temporarily while the bot speaks
+            if (isRecognizing) {
+                recognition.stop();  // Stop recognizing to avoid interference with bot's speech
+                updateMicButton(false); // Update the button to reflect mic stopped
+            }
+
+            // Speak the chatbot's response, and restart recognition after speaking
+            speakText(response.message, 'en-US').then(() => {
+
+                console.log("Bot finished speaking, restarting recognition if it was on");
+
+                // Once the bot finishes speaking, restart recognition if it was previously on
+                if (isRecognizing) {
+                    recognition.start();  // Restart recognition after bot speaks
+                    updateMicButton(true); // Update the button to reflect mic restarted
+                }
+            });
         });
 
         // Reset the final transcript after sending to backend
         finalTranscript = '';
     }
+}
+
+async function speakText(text, language) {
+    return new Promise((resolve) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = language;
+
+        // Start the equalizer when speech synthesis begins
+        startEqualizer();
+
+        // Resolve the promise when speech synthesis ends
+        utterance.onend = () => {
+            console.log("Speech synthesis ended");
+            isSpeaking = false;  // Set speaking status to false when done
+            stopEqualizer(); // Stop the equalizer when speech ends
+            resolve();
+        };
+
+        window.speechSynthesis.speak(utterance);
+    });
 }
 
 function updateTranscript(interimText) {
@@ -249,17 +289,29 @@ function appendMessage(role, text) {
     responseDiv.scrollTop = responseDiv.scrollHeight;
 }
 
-// Play button event listener to start/stop recording
-document.getElementById('playBtn').addEventListener('click', function() {
-    console.log('Play button clicked');
+// Function to update the microphone button icon and tooltip
+function updateMicButton(isRecognizing) {
     const button = document.getElementById('playBtn');
     const buttonIcon = button.querySelector('i');
 
     if (isRecognizing) {
-        recognition.stop(); // Stop recognition on user command
+        buttonIcon.classList.remove('fa-play');
+        buttonIcon.classList.add('fa-times');
+        button.title = 'Stop Speech Recognition';
+    } else {
         buttonIcon.classList.remove('fa-times');
         buttonIcon.classList.add('fa-play');
         button.title = 'Start Speech Recognition';
+    }
+}
+
+// Play button event listener to start/stop recording
+document.getElementById('playBtn').addEventListener('click', function() {
+    console.log('Play button clicked');
+    
+    if (isRecognizing) {
+        recognition.stop(); // Stop recognition on user command
+        updateMicButton(false); // Update the button to reflect mic stopped
         isRecognizing = false; // Set recognizing state to false
         stopEqualizer(); // Stop the equalizer but keep bars
     } else {
@@ -268,9 +320,7 @@ document.getElementById('playBtn').addEventListener('click', function() {
         }
         recognition.start(); // Start recognizing
         startEqualizer(); // Start the equalizer
-        buttonIcon.classList.remove('fa-play');
-        buttonIcon.classList.add('fa-times');
-        button.title = 'Stop Speech Recognition';
+        updateMicButton(true); // Update the button to reflect mic started
         isRecognizing = true; // Set recognizing state to true
     }
 });
@@ -287,15 +337,11 @@ async function sendMessageToChatbot(message) {
             throw new Error(`Request failed with status ${response.status}`);
         }
 
-        return response.json();
+        const jsonResponse = await response.json();
+        console.log("Backend response:", jsonResponse);
+        return jsonResponse;
     } catch (error) {
         console.error('Error in sendMessageToChatbot:', error);
         return { message: `Error: ${error.message}` };
     }
-}
-
-function speakText(text, language) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language;
-    window.speechSynthesis.speak(utterance);
 }
