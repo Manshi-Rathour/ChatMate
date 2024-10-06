@@ -3,7 +3,6 @@ import openai
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
@@ -11,11 +10,8 @@ app = Flask(__name__)
 app.static_folder = 'static'
 app.template_folder = 'templates'
 
-# Get the OpenAI API key from the environment variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
-# Define a class to parse the incoming request (if necessary)
 class ChatInput:
     def __init__(self, message):
         self.message = message
@@ -26,7 +22,6 @@ def index():
     return render_template("index.html")
 
 
-# Route to handle chatbot response requests
 @app.route("/chatbot", methods=['POST'])
 def get_response():
     try:
@@ -51,7 +46,6 @@ def get_response():
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
 
-# Function to interact with OpenAI API and fetch chatbot response
 def fetch_openai_response(input_data: ChatInput):
     user_message = input_data.message
     messages = [
